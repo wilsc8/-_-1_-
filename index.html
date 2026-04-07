@@ -2,616 +2,169 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Уютное кафе-кондитерская Сладкая жизнь. Вкусная выпечка, ароматный кофе.">
-    <meta name="keywords" content="кафе, кондитерская, десерты, кофе">
-    <meta name="author" content="Имя Студента">
-    <title>Сладкая жизнь - Главная</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №6 - Работа с DOM</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #fdf4f0 0%, #f8e9e0 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #4a2c2c 0%, #6b4f4f 100%);
-            color: white;
-            padding: 25px 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '☕';
-            position: absolute;
-            left: 10%;
-            top: -10px;
-            font-size: 80px;
-            opacity: 0.1;
-            transform: rotate(15deg);
-        }
-        
-        .header::after {
-            content: '🍰';
-            position: absolute;
-            right: 10%;
-            bottom: -20px;
-            font-size: 100px;
-            opacity: 0.1;
-        }
-        
-        .header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .logo {
-            font-size: 32px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            color: #d49b6a;
-            font-size: 40px;
-        }
-        
-        .menu a {
-            color: white;
-            text-decoration: none;
-            margin-left: 30px;
-            font-size: 18px;
-            padding: 8px 15px;
-            border-radius: 25px;
-            transition: all 0.3s;
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .menu a:hover {
-            background: #d49b6a;
-            transform: translateY(-2px);
-        }
-        
-        .hero {
-            background: linear-gradient(135deg, #6b4f4f, #8b6b6b);
-            min-height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shape {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-        
-        .shape1 {
-            top: -20px;
-            left: -20px;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(212,155,106,0.3) 0%, rgba(255,255,255,0) 70%);
-        }
-        
-        .shape2 {
-            bottom: -50px;
-            right: -50px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-        }
-
-        .food-icon {
-            position: absolute;
-            font-size: 60px;
-            color: rgba(255,255,255,0.2);
-        }
-        
-        .icon1 {
-            top: 20%;
-            left: 10%;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .icon2 {
-            bottom: 20%;
-            right: 10%;
-            animation: float 4s ease-in-out infinite reverse;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            padding: 20px;
             max-width: 800px;
-            padding: 40px;
-            background: rgba(74, 44, 44, 0.7);
-            border-radius: 60px 20px 60px 20px;
-            backdrop-filter: blur(5px);
-            border: 2px solid rgba(212,155,106,0.5);
+            margin: 0 auto;
         }
-        
-        .hero h1 {
-            font-size: 52px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+
+        .dark-theme {
+            background-color: #1a1a2e;
+            color: #eee;
         }
-        
-        .hero p {
-            font-size: 22px;
-            margin-bottom: 30px;
-            line-height: 1.6;
+
+        .dark-theme button {
+            background-color: #16213e;
+            color: #eee;
+            border-color: #0f3460;
         }
-        
-        .hero-button {
-            display: inline-block;
-            background: #d49b6a;
+
+        .dark-theme .highlight {
+            background-color: #0f3460;
+            border-color: #e94560;
+        }
+
+        .container {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .dark-theme .container {
+            background-color: #16213e;
+            border-color: #0f3460;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
             color: white;
-            padding: 15px 40px;
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 20px;
+            border: none;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .text-block {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .highlight {
+            background-color: #ffff99;
+            border: 2px solid #ff9800;
+            padding: 15px;
             font-weight: bold;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .hero-button:hover {
-            background: transparent;
-            border-color: white;
-            transform: scale(1.05);
         }
 
-        .about-section {
-            padding: 80px 0;
-            background: white;
-            position: relative;
-            overflow: hidden;
+        .dark-theme .highlight {
+            background-color: #0f3460;
+            border-color: #e94560;
+            color: #eee;
         }
-        
-        .about-section::before {
-            content: '🍰🍪☕';
-            position: absolute;
-            font-size: 200px;
-            opacity: 0.05;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
-            letter-spacing: 30px;
+
+        .hidden {
+            display: none;
         }
-        
-        .about-content {
-            display: flex;
-            align-items: center;
-            gap: 60px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .about-text {
-            flex: 1;
-        }
-        
-        .about-text h2 {
-            color: #4a2c2c;
-            font-size: 42px;
-            margin-bottom: 30px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .about-text h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #d49b6a, #4a2c2c);
-        }
-        
-        .about-text p {
-            color: #555;
-            line-height: 1.8;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        
-        .about-figure {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            min-height: 400px;
-        }
-        
-        .plate {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-            border-radius: 50% 50% 40% 40%;
-            position: relative;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
-            border: 8px solid #fff;
-        }
-        
-        .cup {
-            position: absolute;
-            width: 120px;
-            height: 100px;
-            background: #d49b6a;
-            border-radius: 0 0 40px 40px;
-            top: 30px;
-            right: 20px;
-        }
-        
-        .cup::before {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 40px;
-            background: #d49b6a;
-            right: -20px;
-            top: 15px;
-            border-radius: 0 20px 20px 0;
-        }
-        
-        .cup::after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 30px;
-            background: #fff;
-            border-radius: 50%;
-            top: -15px;
-            left: 20px;
-            opacity: 0.7;
-        }
-        
-        .cake-slice {
-            position: absolute;
-            width: 150px;
-            height: 100px;
-            background: #8b4513;
-            bottom: 40px;
-            left: 20px;
-            border-radius: 20px 20px 0 0;
-            transform: rotate(-5deg);
-        }
-        
-        .cake-slice::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 20px;
-            background: #d49b6a;
-            top: 20px;
-            left: 0;
-        }
-        
-        .cake-slice::after {
-            content: '🍒';
-            position: absolute;
-            font-size: 30px;
-            top: -15px;
-            right: 10px;
-        }
-        
-        .content {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #f8e9e0, #fdf4f0);
-        }
-        
-        .content h2 {
-            color: #4a2c2c;
-            font-size: 42px;
-            text-align: center;
-            margin-bottom: 50px;
-            position: relative;
-        }
-        
-        .content h2::before,
-        .content h2::after {
-            content: '☕';
-            font-size: 30px;
-            margin: 0 20px;
-            color: #d49b6a;
-        }
-        
-        .cards {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-        }
-        
-        .card {
-            flex: 1;
-            background: white;
-            border-radius: 40px 20px 40px 20px;
-            padding: 30px 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            border: 2px solid rgba(212,155,106,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #d49b6a, #4a2c2c);
-        }
-        
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 40px rgba(0,0,0,0.15);
-        }
-        
-        .card-icon {
-            font-size: 70px;
-            color: #d49b6a;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .card h3 {
-            color: #4a2c2c;
-            font-size: 26px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .card p {
-            color: #666;
-            line-height: 1.6;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .card-decoration {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .dot {
-            width: 10px;
-            height: 10px;
-            background: #d49b6a;
-            border-radius: 50%;
-            opacity: 0.5;
-        }
-        
-        .dot:nth-child(2) { background: #4a2c2c; }
-        .dot:nth-child(3) { background: #d49b6a; }
-        
-        .footer {
-            background: #2c1c1c;
-            color: white;
-            padding: 50px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .footer::before {
-            content: '☕🍰🍪';
-            position: absolute;
-            font-size: 100px;
-            opacity: 0.05;
-            bottom: 10px;
-            left: 20px;
-            transform: rotate(-10deg);
-        }
-        
-        .footer .container {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .footer-col {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .footer-col i {
-            font-size: 30px;
-            color: #d49b6a;
-            margin-bottom: 15px;
-        }
-        
-        .footer-col p {
-            color: #ccc;
-            line-height: 1.8;
-            font-size: 16px;
-        }
-        
-        .footer-col b {
-            color: #d49b6a;
+
+        .colorful {
+            color: #e94560;
             font-size: 18px;
         }
 
-        @media (max-width: 768px) {
-            .about-content,
-            .cards,
-            .footer .container {
-                flex-direction: column;
-            }
-            
-            .menu a {
-                margin: 0 5px;
-                font-size: 14px;
-            }
-            
-            .hero h1 {
-                font-size: 36px;
-            }
+        .theme-toggle {
+            background-color: #ff9800;
+        }
+
+        .add-class-btn {
+            background-color: #2196F3;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Исходный заголовок</h1>
 
-    <div class="header">
-        <div class="container">
-            <div class="logo">
-                <i class="fas fa-cake-candles"></i>
-                Сладкая жизнь
-            </div>
-            <div class="menu">
-                <a href="#about"><i class="fas fa-heart"></i> О нас</a>
-                <a href="#menu"><i class="fas fa-utensils"></i> Меню</a>
-                <a href="#contacts"><i class="fas fa-phone"></i> Контакты</a>
-            </div>
+        <p id="mainParagraph">Это абзац для демонстрации изменения цвета и работы с DOM. Нажмите на кнопки ниже, чтобы увидеть изменения.</p>
+
+        <div>
+            <button id="changeTitleBtn">Изменить заголовок</button>
+            <button id="changeColorBtn">Изменить цвет абзаца</button>
+        </div>
+
+        <div class="text-block" id="textBlock">
+            Этот блок можно скрывать и показывать. Здесь находится важная информация, которую вы можете скрыть или показать с помощью кнопок.
+        </div>
+
+        <div>
+            <button id="hideTextBtn">Скрыть текст</button>
+            <button id="showTextBtn">Показать текст</button>
+        </div>
+
+        <div>
+            <button id="addClassBtn" class="add-class-btn">Добавить класс к блоку</button>
+        </div>
+
+        <div>
+            <button id="themeToggleBtn" class="theme-toggle">Переключить тему (светлая/тёмная)</button>
         </div>
     </div>
 
-    <div class="hero">
-        <div class="shape shape1"></div>
-        <div class="shape shape2"></div>
-        <div class="food-icon icon1"><i class="fas fa-cake-candles"></i></div>
-        <div class="food-icon icon2"><i class="fas fa-mug-hot"></i></div>
-        
-        <div class="hero-content">
-            <h1>Вкус, который хочется повторить</h1>
-            <p>Свежая выпечка и ароматный кофе каждый день</p>
-            <a href="#menu" class="hero-button">Посмотреть меню <i class="fas fa-arrow-right"></i></a>
-        </div>
-    </div>
+    <script>
+        const title = document.querySelector("h1");
+        const paragraph = document.getElementById("mainParagraph");
+        const textBlock = document.getElementById("textBlock");
+        const changeTitleBtn = document.getElementById("changeTitleBtn");
+        const changeColorBtn = document.getElementById("changeColorBtn");
+        const hideTextBtn = document.getElementById("hideTextBtn");
+        const showTextBtn = document.getElementById("showTextBtn");
+        const addClassBtn = document.getElementById("addClassBtn");
+        const themeToggleBtn = document.getElementById("themeToggleBtn");
 
-    <div id="about" class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>О нашем кафе</h2>
-                    <p>
-                        <i class="fas fa-crown" style="color: #d49b6a;"></i> 
-                        <b>Сладкая жизнь</b> — это уютное место, где каждый десерт создаётся с любовью.
-                    </p>
-                    <p>
-                        <i class="fas fa-check-circle" style="color: #d49b6a;"></i>
-                        Мы используем только натуральные продукты и семейные рецепты.
-                    </p>
-                    <p>
-                        <i class="fas fa-users" style="color: #d49b6a;"></i>
-                        Уютная атмосфера, идеально для встреч с друзьями и семьёй.
-                    </p>
-                </div>
-                <div class="about-figure">
-                    <div class="plate">
-                        <div class="cup"></div>
-                        <div class="cake-slice"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        changeTitleBtn.addEventListener("click", function() {
+            title.textContent = "Новый изменённый заголовок!";
+        });
 
-    <div id="menu" class="content">
-        <div class="container">
-            <h2>Наши фирменные десерты</h2>
-            
-            <div class="cards">
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-cake-candles"></i>
-                    </div>
-                    <h3>Торт "Черный лес"</h3>
-                    <p>Шоколадные коржи с вишневой начинкой и нежным кремом</p>
-                    <div class="card-decoration">
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-cookie-bite"></i>
-                    </div>
-                    <h3>Французские макарун</h3>
-                    <p>Миндальные пирожные с кремом. 8 разных вкусов</p>
-                    <div class="card-decoration">
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-mug-hot"></i>
-                    </div>
-                    <h3>Кофе по-венски</h3>
-                    <p>Ароматный кофе со взбитыми сливками и корицей</p>
-                    <div class="card-decoration">
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        changeColorBtn.addEventListener("click", function() {
+            paragraph.style.color = "red";
+            paragraph.style.fontWeight = "bold";
+        });
 
-    <div id="contacts" class="footer">
-        <div class="container">
-            <div class="footer-col">
-                <i class="fas fa-map-marker-alt"></i>
-                <p><b>Адрес</b></p>
-                <p>ул. Пушкина, д. 10</p>
-            </div>
-            <div class="footer-col">
-                <i class="fas fa-clock"></i>
-                <p><b>Часы работы</b></p>
-                <p>Ежедневно: 9:00 - 23:00</p>
-            </div>
-            <div class="footer-col">
-                <i class="fas fa-phone"></i>
-                <p><b>Телефон</b></p>
-                <p>+7 (123) 456-78-90</p>
-            </div>
-        </div>
-    </div>
+        hideTextBtn.addEventListener("click", function() {
+            textBlock.style.display = "none";
+        });
 
+        showTextBtn.addEventListener("click", function() {
+            textBlock.style.display = "block";
+        });
+
+        addClassBtn.addEventListener("click", function() {
+            textBlock.classList.toggle("highlight");
+        });
+
+        themeToggleBtn.addEventListener("click", function() {
+            document.body.classList.toggle("dark-theme");
+
+            if(document.body.classList.contains("dark-theme")) {
+                themeToggleBtn.textContent = "Светлая тема";
+            } else {
+                themeToggleBtn.textContent = "Тёмная тема";
+            }
+        });
+    </script>
 </body>
 </html>
