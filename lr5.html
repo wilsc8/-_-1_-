@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №5 — События в JavaScript</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+            transition: background-color 0.2s;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #0077ff;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-top: 8px;
+        }
+        button:hover {
+            background-color: #005fcc;
+        }
+        .counter-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 250px;
+            margin-right: 10px;
+        }
+        hr {
+            margin: 15px 0;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Задание 1 и 2: Кнопка alert + изменение заголовка</h2>
+        <button id="alertBtn">Нажми меня</button>
+        <hr>
+        <h1 id="mainTitle">Привет, мир!</h1>
+        <button id="changeTitleBtn">Изменить текст заголовка</button>
+    </div>
+
+    <div class="card">
+        <h2>Задание 3: Изменение цвета фона</h2>
+        <button id="changeColorBtn">Сменить цвет фона</button>
+        <p style="font-size: 14px; color: gray;">Нажмите — цвет фона страницы меняется на случайный</p>
+    </div>
+
+    <div class="card">
+        <h2>Задание 4 и 5: Счётчик кликов</h2>
+        <div class="counter-value" id="counterDisplay">0</div>
+        <button id="incrementBtn">+1</button>
+        <button id="resetBtn">Сброс</button>
+    </div>
+
+    <div class="card">
+        <h2>Задание 6: Форма (отправка без перезагрузки)</h2>
+        <form id="myForm">
+            <input type="text" id="userInput" placeholder="Введите любой текст..." />
+            <button type="submit">Отправить</button>
+        </form>
+        <p style="font-size: 14px; color: gray;">Текст появится в консоли (F12 → вкладка Console)</p>
+    </div>
+
+    <script>
+        // ========== 1. Кнопка с alert ==========
+        const alertBtn = document.getElementById("alertBtn");
+        alertBtn.onclick = function() {
+            alert("Вы нажали на кнопку!");
+        };
+
+        // ========== 2. Изменение заголовка h1 ==========
+        const mainTitle = document.getElementById("mainTitle");
+        const changeTitleBtn = document.getElementById("changeTitleBtn");
+        changeTitleBtn.addEventListener("click", function() {
+            mainTitle.textContent = "Новый заголовок";
+        });
+
+        // ========== 3. Случайный цвет фона ==========
+        const changeColorBtn = document.getElementById("changeColorBtn");
+        changeColorBtn.addEventListener("click", function() {
+            const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+            document.body.style.backgroundColor = randomColor;
+        });
+
+        // ========== 4 и 5. Счётчик кликов ==========
+        let count = 0;
+        const counterDisplay = document.getElementById("counterDisplay");
+        const incrementBtn = document.getElementById("incrementBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        function updateCounter() {
+            counterDisplay.textContent = count;
+        }
+
+        incrementBtn.addEventListener("click", function() {
+            count++;
+            updateCounter();
+        });
+
+        resetBtn.addEventListener("click", function() {
+            count = 0;
+            updateCounter();
+        });
+
+        // ========== 6. Форма: отмена перезагрузки + вывод в консоль ==========
+        const myForm = document.getElementById("myForm");
+        const userInput = document.getElementById("userInput");
+
+        myForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const inputValue = userInput.value;
+            console.log("Введённый текст:", inputValue);
+            console.log("Форма отправлена без перезагрузки страницы");
+        });
+    </script>
+</body>
+</html>
