@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список задач | Динамические элементы</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f4fa 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .task-container {
+            max-width: 650px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 42px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 1.8rem 2rem 2.2rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+            color: #0a2b3e;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1::before {
+            content: "✓";
+            background: #2c7da0;
+            color: white;
+            font-size: 1.4rem;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            box-shadow: 0 6px 12px -6px rgba(44, 125, 160, 0.4);
+        }
+
+        .sub {
+            color: #4a627a;
+            border-left: 4px solid #61a5c2;
+            padding-left: 14px;
+            margin: 8px 0 24px 0;
+            font-weight: 450;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .task-input {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 1rem;
+            border: 2px solid #dce5f0;
+            border-radius: 60px;
+            background: white;
+            transition: 0.2s;
+            outline: none;
+            font-weight: 500;
+            color: #0f2c3b;
+        }
+
+        .task-input:focus {
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.2);
+        }
+
+        .btn-add {
+            background: #2c7da0;
+            border: none;
+            padding: 0 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: #1f5e7e;
+            transform: scale(0.97);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-list-section {
+            background: #f8fafc;
+            border-radius: 28px;
+            padding: 6px 8px 12px 8px;
+            box-shadow: inset 0 1px 2px #00000008, 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 10px 16px 0 16px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .task-header h3 {
+            font-weight: 600;
+            color: #1e4a6b;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .task-counter {
+            background: #d9e6f2;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1f5e7e;
+        }
+
+        .tasks-list {
+            list-style: none;
+            margin: 0;
+            padding: 0 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .tasks-list li {
+            background: white;
+            border-radius: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px 10px 24px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s;
+            border: 1px solid #e9edf2;
+            backdrop-filter: blur(2px);
+        }
+
+        .tasks-list li:hover {
+            transform: translateX(4px);
+            border-color: #cbdde9;
+            box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.12);
+        }
+
+        .task-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1f2f3e;
+            word-break: break-word;
+            padding-right: 12px;
+            flex: 1;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            border-radius: 40px;
+            transition: 0.15s;
+            color: #9aaebf;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            color: #c23b22;
+            transform: scale(1.02);
+        }
+
+        .delete-btn::before {
+            content: "✕";
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 36px 20px;
+            color: #8ca3b9;
+            font-weight: 450;
+            font-style: italic;
+            background: #f1f5f9;
+            border-radius: 48px;
+            margin: 8px;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 24px;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #86a2bd;
+        }
+
+        @media (max-width: 500px) {
+            .task-container {
+                padding: 1.2rem;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            .btn-add {
+                justify-content: center;
+                padding: 12px;
+            }
+            .tasks-list li {
+                border-radius: 28px;
+                padding: 8px 12px 8px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="task-container">
+    <h1>Мои задачи</h1>
+    <div class="sub">Динамическое создание · удаление элементов</div>
+
+    <div class="input-group">
+        <input type="text" id="taskInput" class="task-input" placeholder="Введите задачу..." autocomplete="off">
+        <button id="addTaskBtn" class="btn-add"> Добавить</button>
+    </div>
+
+    <div class="task-list-section">
+        <div class="task-header">
+            <h3>Список дел</h3>
+            <span id="tasksCounter" class="task-counter">0 задач</span>
+        </div>
+        <ul id="tasksList" class="tasks-list">
+            <li class="empty-message" style="list-style: none; justify-content: center;"> Нет задач. Добавьте первую!</li>
+        </ul>
+    </div>
+    <footer>нажмите «Удалить» — задача исчезнет</footer>
+</div>
+
+<script>
+    (function() {
+        const taskInput = document.getElementById('taskInput');
+        const addButton = document.getElementById('addTaskBtn');
+        const tasksContainer = document.getElementById('tasksList');
+        const counterSpan = document.getElementById('tasksCounter');
+
+        function updateCounter() {
+            if (!tasksContainer) return;
+            const items = tasksContainer.querySelectorAll('li:not(.empty-message)');
+            const count = items.length;
+            if (counterSpan) {
+                const wordForm = (count === 0 ? 'задач' : (count === 1 ? 'задача' : (count >= 2 && count <= 4 ? 'задачи' : 'задач')));
+                counterSpan.textContent = count + ' ' + wordForm;
+            }
+            const emptyPlaceholder = tasksContainer.querySelector('.empty-message');
+            if (count === 0) {
+                if (!emptyPlaceholder) {
+                    const emptyDiv = document.createElement('li');
+                    emptyDiv.className = 'empty-message';
+                    emptyDiv.style.listStyle = 'none';
+                    emptyDiv.style.justifyContent = 'center';
+                    emptyDiv.textContent = ' Нет задач. Добавьте первую!';
+                    tasksContainer.appendChild(emptyDiv);
+                }
+            } else {
+                if (emptyPlaceholder && emptyPlaceholder.classList.contains('empty-message')) {
+                    emptyPlaceholder.remove();
+                }
+            }
+        }
+
+        function createDeleteButton(taskItem) {
+            const delBtn = document.createElement('button');
+            delBtn.className = 'delete-btn';
+            delBtn.setAttribute('aria-label', 'Удалить задачу');
+            delBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                if (taskItem && taskItem.remove) {
+                    taskItem.remove();
+                    updateCounter();
+                }
+            });
+            return delBtn;
+        }
+
+        function addTaskToList(taskText) {
+            if (!tasksContainer) return null;
+
+            const emptyMsg = tasksContainer.querySelector('.empty-message');
+            if (emptyMsg) emptyMsg.remove();
+
+            const li = document.createElement('li');
+            const textSpan = document.createElement('span');
+            textSpan.className = 'task-text';
+            textSpan.textContent = taskText;
+
+            const deleteButton = createDeleteButton(li);
+
+            li.appendChild(textSpan);
+            li.appendChild(deleteButton);
+            tasksContainer.appendChild(li);
+
+            updateCounter();
+            return li;
+        }
+
+        function handleAddTask() {
+            if (!taskInput) return;
+            const rawValue = taskInput.value;
+            const trimmedValue = rawValue.trim();
+
+            if (trimmedValue === "") {
+                taskInput.style.borderColor = "#e07c5c";
+                taskInput.style.boxShadow = "0 0 0 2px rgba(224, 124, 92, 0.2)";
+                setTimeout(() => {
+                    taskInput.style.borderColor = "#dce5f0";
+                    taskInput.style.boxShadow = "";
+                }, 500);
+                return;
+            }
+
+            addTaskToList(trimmedValue);
+
+            taskInput.value = "";
+            taskInput.focus();
+            taskInput.style.borderColor = "#dce5f0";
+        }
+
+        function clearAllTasks() {
+            if (!tasksContainer) return;
+            const allTasks = tasksContainer.querySelectorAll('li:not(.empty-message)');
+            allTasks.forEach(task => task.remove());
+            updateCounter();
+        }
+
+        function initDemoTasks() {
+            const demo = [
+                "Изучить createElement и appendChild",
+                "Реализовать удаление через remove()"
+            ];
+            const existing = tasksContainer.querySelectorAll('li');
+            existing.forEach(el => el.remove());
+            demo.forEach(text => {
+                addTaskToList(text);
+            });
+        }
+
+        function resetToEmpty() {
+            if (!tasksContainer) return;
+            const allLi = tasksContainer.querySelectorAll('li');
+            allLi.forEach(li => li.remove());
+            const emptyLi = document.createElement('li');
+            emptyLi.className = 'empty-message';
+            emptyLi.style.listStyle = 'none';
+            emptyLi.style.justifyContent = 'center';
+            emptyLi.textContent = ' Нет задач. Добавьте первую!';
+            tasksContainer.appendChild(emptyLi);
+            updateCounter();
+        }
+
+        function onEnterHandler(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleAddTask();
+            }
+        }
+
+        function initializeApp() {
+            if (addButton) {
+                addButton.addEventListener('click', handleAddTask);
+            }
+            if (taskInput) {
+                taskInput.addEventListener('keypress', onEnterHandler);
+            }
+            const staticPlaceholder = tasksContainer.querySelector('.empty-message');
+            if (staticPlaceholder) staticPlaceholder.remove();
+            const anyLi = tasksContainer.querySelectorAll('li');
+            anyLi.forEach(li => li.remove());
+            const freshEmpty = document.createElement('li');
+            freshEmpty.className = 'empty-message';
+            freshEmpty.style.listStyle = 'none';
+            freshEmpty.style.justifyContent = 'center';
+            freshEmpty.textContent = ' Нет задач. Добавьте первую!';
+            tasksContainer.appendChild(freshEmpty);
+            updateCounter();
+        }
+
+        initializeApp();
+
+        const originalUpdate = updateCounter;
+        window.updateCounter = updateCounter;
+        function safeUpdateCounter() {
+            if (!tasksContainer) return;
+            const items = Array.from(tasksContainer.children).filter(child => !child.classList || !child.classList.contains('empty-message'));
+            const count = items.length;
+            if (counterSpan) {
+                let suffix = 'задач';
+                if (count === 1) suffix = 'задача';
+                else if (count >= 2 && count <= 4) suffix = 'задачи';
+                counterSpan.textContent = count + ' ' + suffix;
+            }
+            const existingEmpty = tasksContainer.querySelector('.empty-message');
+            if (count === 0) {
+                if (!existingEmpty) {
+                    const emptyDiv = document.createElement('li');
+                    emptyDiv.className = 'empty-message';
+                    emptyDiv.style.listStyle = 'none';
+                    emptyDiv.style.justifyContent = 'center';
+                    emptyDiv.textContent = ' Нет задач. Добавьте первую!';
+                    tasksContainer.appendChild(emptyDiv);
+                }
+            } else {
+                if (existingEmpty) existingEmpty.remove();
+            }
+        }
+
+        window.updateCounter = safeUpdateCounter;
+        const addTaskRef = addTaskToList;
+        window.addTaskToList = function(text) {
+            const emptyMsg = tasksContainer.querySelector('.empty-message');
+            if (emptyMsg) emptyMsg.remove();
+            const li = document.createElement('li');
+            const textSpan = document.createElement('span');
+            textSpan.className = 'task-text';
+            textSpan.textContent = text;
+            const delBtn = createDeleteButton(li);
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
+            tasksContainer.appendChild(li);
+            safeUpdateCounter();
+            return li;
+        };
+
+        const originalHandle = handleAddTask;
+        window.handleAddTask = function() {
+            if (!taskInput) return;
+            const val = taskInput.value.trim();
+            if (val === "") {
+                taskInput.style.borderColor = "#e07c5c";
+                taskInput.style.boxShadow = "0 0 0 2px rgba(224, 124, 92, 0.2)";
+                setTimeout(() => {
+                    taskInput.style.borderColor = "#dce5f0";
+                    taskInput.style.boxShadow = "";
+                }, 500);
+                return;
+            }
+            window.addTaskToList(val);
+            taskInput.value = "";
+            taskInput.focus();
+        };
+
+        if (addButton) {
+            const newBtn = addButton.cloneNode(true);
+            addButton.parentNode.replaceChild(newBtn, addButton);
+            newBtn.addEventListener('click', window.handleAddTask);
+            window.addButton = newBtn;
+        } else {
+            if(addButton) addButton.addEventListener('click', window.handleAddTask);
+        }
+
+        if (taskInput) {
+            taskInput.removeEventListener('keypress', onEnterHandler);
+            taskInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    window.handleAddTask();
+                }
+            });
+        }
+
+        const allChildren = [...tasksContainer.children];
+        allChildren.forEach(ch => ch.remove());
+        safeUpdateCounter();
+
+        window.createDeleteButtonFinal = function(liElement) {
+            const btn = document.createElement('button');
+            btn.className = 'delete-btn';
+            btn.setAttribute('aria-label', 'Удалить');
+            btn.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                if (liElement && liElement.remove) {
+                    liElement.remove();
+                    safeUpdateCounter();
+                }
+            });
+            return btn;
+        };
+
+        window.addTaskFinal = function(text) {
+            const emptyMsg = tasksContainer.querySelector('.empty-message');
+            if (emptyMsg) emptyMsg.remove();
+            const li = document.createElement('li');
+            const span = document.createElement('span');
+            span.className = 'task-text';
+            span.textContent = text;
+            const delBtn = window.createDeleteButtonFinal(li);
+            li.appendChild(span);
+            li.appendChild(delBtn);
+            tasksContainer.appendChild(li);
+            safeUpdateCounter();
+            return li;
+        };
+
+        window.handleAddFinal = function() {
+            const raw = taskInput.value;
+            if (!raw.trim()) {
+                taskInput.style.borderColor = "#e07c5c";
+                setTimeout(() => taskInput.style.borderColor = "#dce5f0", 400);
+                return;
+            }
+            window.addTaskFinal(raw.trim());
+            taskInput.value = "";
+            taskInput.focus();
+        };
+
+        if (window.addButton) {
+            window.addButton.removeEventListener('click', window.handleAddTask);
+            window.addButton.addEventListener('click', window.handleAddFinal);
+        } else if(addButton) {
+            addButton.addEventListener('click', window.handleAddFinal);
+        }
+        if (taskInput) {
+            taskInput.value = "";
+        }
+        safeUpdateCounter();
+    })();
+</script>
+</body>
+</html>
