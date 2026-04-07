@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №7 - Регистрация</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            min-height: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            background: #27ae60;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 600;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация</h1>
+        <div class="subtitle">Создайте новый аккаунт</div>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="name">Имя</label>
+                <input type="text" id="name" name="name" placeholder="Введите ваше имя">
+                <div id="nameError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="example@mail.com">
+                <div id="emailError" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" placeholder="Не менее 6 символов">
+                <div id="passwordError" class="error-message"></div>
+            </div>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+
+        <div id="successMessage" class="success-message" style="display: none;"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const successMessageDiv = document.getElementById('successMessage');
+
+        function clearErrors() {
+            nameError.textContent = '';
+            emailError.textContent = '';
+            passwordError.textContent = '';
+            successMessageDiv.style.display = 'none';
+            successMessageDiv.textContent = '';
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            clearErrors();
+
+            const nameValue = nameInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            const passwordValue = passwordInput.value.trim();
+
+            if (nameValue === '') {
+                nameError.textContent = 'Имя не может быть пустым';
+                isValid = false;
+            } else if (nameValue.length < 3) {
+                nameError.textContent = 'Имя должно содержать не менее 3 символов';
+                isValid = false;
+            }
+
+            if (emailValue === '') {
+                emailError.textContent = 'Email не может быть пустым';
+                isValid = false;
+            } else if (!emailValue.includes('@')) {
+                emailError.textContent = 'Email должен содержать символ @';
+                isValid = false;
+            }
+
+            if (passwordValue === '') {
+                passwordError.textContent = 'Пароль не может быть пустым';
+                isValid = false;
+            } else if (passwordValue.length < 6) {
+                passwordError.textContent = 'Пароль должен содержать не менее 6 символов';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            if (validateForm()) {
+                successMessageDiv.textContent = 'Регистрация успешна';
+                successMessageDiv.style.display = 'block';
+                form.reset();
+
+                setTimeout(() => {
+                    successMessageDiv.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
