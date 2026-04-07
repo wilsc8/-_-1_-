@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менеджер заметок</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .app-container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .app-header {
+            background: #1e293b;
+            padding: 1.8rem 2rem;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            color: white;
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        }
+
+        .app-content {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .input-wrapper {
+            flex: 1;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s;
+            font-family: inherit;
+            outline: none;
+            background: #fefefe;
+        }
+
+        .note-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-add {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-add:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-add:active {
+            transform: translateY(1px);
+        }
+
+        .error-message {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #dc2626;
+            background: #fef2f2;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .notes-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 1.8rem 0 1rem 0;
+            border-bottom: 2px solid #eef2ff;
+            padding-bottom: 0.6rem;
+        }
+
+        .notes-stats h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .badge {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .notes-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .note-item {
+            background: #ffffff;
+            border: 1px solid #e9edf2;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .note-item:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.05);
+            transform: translateX(3px);
+        }
+
+        .note-text {
+            font-size: 1rem;
+            color: #0f172a;
+            word-break: break-word;
+            padding-right: 1rem;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-delete:active {
+            transform: scale(0.98);
+        }
+
+        .empty-notes {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: #f8fafc;
+            border-radius: 1.5rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .app-footer {
+            background: #f1f5f9;
+            padding: 0.8rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 550px) {
+            .app-content {
+                padding: 1.2rem;
+            }
+            .input-row {
+                flex-direction: column;
+            }
+            .btn-add {
+                width: 100%;
+                justify-content: center;
+            }
+            .note-item {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+            .btn-delete {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="app-header">
+        <h1>Менеджер заметок</h1>
+    </div>
+
+    <div class="app-content">
+        <div class="form-group">
+            <div class="input-row">
+                <div class="input-wrapper">
+                    <input type="text" id="noteInput" class="note-input" placeholder="Напишите вашу заметку... (мин. 3 символа)" autocomplete="off">
+                </div>
+                <button id="addNoteBtn" class="btn-add">Добавить</button>
+            </div>
+            <div id="errorDisplay" class="error-message"></div>
+        </div>
+
+        <div class="notes-stats">
+            <h2>Мои заметки</h2>
+            <span class="badge" id="notesCounter">0</span>
+        </div>
+
+        <ul id="notesContainer" class="notes-list"></ul>
+    </div>
+    <div class="app-footer">
+        Все заметки хранятся в памяти | Удаляй и добавляй
+    </div>
+</div>
+
+<script>
+    let notes = [];
+
+    const noteInput = document.getElementById('noteInput');
+    const addBtn = document.getElementById('addNoteBtn');
+    const errorDisplay = document.getElementById('errorDisplay');
+    const notesContainer = document.getElementById('notesContainer');
+    const notesCounterSpan = document.getElementById('notesCounter');
+
+    function clearError() {
+        errorDisplay.textContent = '';
+    }
+
+    function showError(message) {
+        errorDisplay.textContent = message;
+        setTimeout(() => {
+            if (errorDisplay.textContent === message) {
+                errorDisplay.textContent = '';
+            }
+        }, 3000);
+    }
+
+    function renderNotes() {
+        notesContainer.innerHTML = '';
+
+        const count = notes.length;
+        notesCounterSpan.textContent = count;
+
+        if (count === 0) {
+            const emptyMessage = document.createElement('li');
+            emptyMessage.className = 'empty-notes';
+            emptyMessage.textContent = 'Пока нет заметок. Добавьте первую!';
+            notesContainer.appendChild(emptyMessage);
+            return;
+        }
+
+        notes.forEach(note => {
+            const li = document.createElement('li');
+            li.className = 'note-item';
+            li.dataset.id = note.id;
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'note-text';
+            textSpan.textContent = note.text;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn-delete';
+            deleteBtn.innerHTML = 'Удалить';
+            deleteBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                deleteNoteById(note.id);
+            });
+
+            li.appendChild(textSpan);
+            li.appendChild(deleteBtn);
+            notesContainer.appendChild(li);
+        });
+    }
+
+    function deleteNoteById(id) {
+        notes = notes.filter(note => note.id !== id);
+        renderNotes();
+        clearError();
+    }
+
+    let lastId = 0;
+    function generateUniqueId() {
+        return Date.now() + (++lastId);
+    }
+
+    function addNote() {
+        let rawText = noteInput.value;
+        const trimmedText = rawText.trim();
+
+        clearError();
+
+        if (trimmedText === "") {
+            showError("Ошибка: заметка не может быть пустой.");
+            return;
+        }
+
+        if (trimmedText.length < 3) {
+            showError(`Ошибка: минимальная длина заметки — 3 символа. Сейчас ${trimmedText.length} символ(а).`);
+            return;
+        }
+
+        const newNote = {
+            id: generateUniqueId(),
+            text: trimmedText
+        };
+
+        notes.push(newNote);
+        noteInput.value = '';
+        renderNotes();
+        noteInput.focus();
+    }
+
+    addBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        addNote();
+    });
+
+    noteInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addNote();
+        }
+    });
+
+    function initExampleNotes() {
+        if (notes.length === 0) {
+            notes.push({ id: generateUniqueId(), text: "Поспать" });
+            renderNotes();
+        }
+    }
+
+    initExampleNotes();
+</script>
+</body>
+</html>
